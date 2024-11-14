@@ -161,6 +161,6 @@ def create_bins(filtered_df, metric):
     
 if apply_button:
     updated_filtered_df = create_bins(filtered_df, metric)
-
+    st.write(updated_filtered_df.sample(10))
 st.write(filtered_data.sample(10))
 
