@@ -126,7 +126,7 @@ branches = st.sidebar.multiselect(
 segment_selection = st.sidebar.multiselect("Сегмент",
                                            options=data['Segment'].unique(),
                                           default=data['Segment'].unique())
-
+#what
 filtered_data = data[
     (data['Огноо'] >= start_date) & (data['Огноо'] <= end_date) &
     (data['Үүсгэгдсэн огноо'] >= start_created) & (data['Үүсгэгдсэн огноо'] <= end_created) &
