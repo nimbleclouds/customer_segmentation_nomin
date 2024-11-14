@@ -132,15 +132,15 @@ filtered_data['Нас_Bins'] = bins2
 bins3 = pd.cut(filtered_data['Нийт худалдан авалтын дүн (M)'], bins=3, labels=['Bin 1', 'Bin 2', 'Bin 3'])
 filtered_data['Нийт худалдан авалтын дүн (M)_Bins'] = bins3
 
-numerical_columns = filtered_df.select_dtypes(include=['int64', 'float64']).columns
+numerical_columns = filtered_data.select_dtypes(include=['int64', 'float64']).columns
 
 plt.figure(figsize=(12, 8))  # Adjust the figure size as needed
-sns.boxplot(data=filtered_df[numerical_columns])
+sns.boxplot(data=filtered_data[numerical_columns])
 plt.xticks(rotation=90)  # Rotate column names for better readability
 plt.title("Boxplot for all Numerical Columns")
 plt.show()
 
-corr_matrix = filtered_df[numerical_columns].corr()
+corr_matrix = filtered_data[numerical_columns].corr()
 mask = pd.np.triu(np.ones_like(corr_matrix, dtype=bool))
 
 plt.figure(figsize=(12, 8))
@@ -151,12 +151,12 @@ plt.show()
 plt.figure(figsize=(15, 12))
 for i, column in enumerate(numerical_columns):
     plt.subplot(len(numerical_columns) // 2 + 1, 2, i + 1)  # Adjust number of rows/columns based on the number of features
-    sns.histplot(filtered_df[column], kde=True, bins=20, color='blue', kde_kws={'color': 'red'})
+    sns.histplot(filtered_data[column], kde=True, bins=20, color='blue', kde_kws={'color': 'red'})
     plt.title(f'Distribution of {column}')
     plt.tight_layout()  # Ensure the plots don't overlap
 plt.show()
 
-segment_spending = filtered_df.groupby('L3')['Нийт худалдан авалтын дүн (M)'].sum().reset_index()
+segment_spending = filtered_data.groupby('L3')['Нийт худалдан авалтын дүн (M)'].sum().reset_index()
 segment_spending = segment_spending.sort_values(by='Нийт худалдан авалтын дүн (M)', ascending=False)
 plt.figure(figsize=(10, 6))
 sns.barplot(x='Нийт худалдан авалтын дүн (M)', y='L3', data=segment_spending, palette='viridis')
