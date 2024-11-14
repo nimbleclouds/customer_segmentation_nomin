@@ -134,7 +134,6 @@ filtered_data['Нийт худалдан авалтын дүн (M)_Bins'] = bins
 
 numerical_columns = filtered_data.select_dtypes(include=['int64', 'float64']).columns
 
-# Boxplot for numerical columns
 st.subheader("Boxplot for All Numerical Columns")
 plt.figure(figsize=(12, 8))
 sns.boxplot(data=filtered_data[numerical_columns])
@@ -142,17 +141,15 @@ plt.xticks(rotation=90)
 plt.title("Boxplot for all Numerical Columns")
 st.pyplot(plt)
 
-# Correlation Matrix Heatmap
+
 st.subheader("Correlation Heatmap")
 corr_matrix = filtered_data[numerical_columns].corr()
 mask = np.triu(np.ones_like(corr_matrix, dtype=bool))
-
 plt.figure(figsize=(12, 8))
 sns.heatmap(corr_matrix, mask=mask, annot=True, cmap='coolwarm', fmt='.2f', cbar=True, linewidths=0.5)
 plt.title('Correlation Heatmap', fontsize=16)
 st.pyplot(plt)
 
-# Distribution Plots for each numerical feature
 st.subheader("Distribution of Numerical Features")
 plt.figure(figsize=(15, 12))
 for i, column in enumerate(numerical_columns):
@@ -160,22 +157,6 @@ for i, column in enumerate(numerical_columns):
     sns.histplot(filtered_data[column], kde=True, bins=20, kde_kws={'color': 'red'})
     plt.title(f'Distribution of {column}')
     plt.tight_layout()  # Avoid overlap of subplots
-st.pyplot(plt)
-
-# Total Spending by 'L3' Segment
-st.subheader("Total Spending by L3 Segment")
-# Ensure there are no missing values in 'L3' and 'Нийт худалдан авалтын дүн (M)'
-segment_spending = filtered_data.dropna(subset=['L3', 'Нийт худалдан авалтын дүн (M)']) \
-                                .groupby('L3')['Нийт худалдан авалтын дүн (M)'] \
-                                .sum().reset_index()
-
-segment_spending = segment_spending.sort_values(by='Нийт худалдан авалтын дүн (M)', ascending=False)
-
-plt.figure(figsize=(10, 6))
-sns.barplot(x='Нийт худалдан авалтын дүн (M)', y='L3', data=segment_spending, palette='viridis')
-plt.title('Total Spending by L3 Segment', fontsize=16)
-plt.xlabel('Total Spending (M)', fontsize=12)
-plt.ylabel('L3 Segment', fontsize=12)
 st.pyplot(plt)
 
 ####################################################################################################################
