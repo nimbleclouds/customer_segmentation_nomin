@@ -156,9 +156,9 @@ def format_similarity(products):
 top_products_with_similarity = filtered_data[filtered_data['Барааны нэр'].isin(top_products.index)]
 top_products_with_similarity['Санал болгох бараанууд'] = top_products_with_similarity['Санал болгох бараанууд'].apply(format_similarity)
 top_revenue_products_with_similarity = filtered_data[filtered_data['Барааны нэр'].isin(top_revenue_products.index)]
-st.write(top_revenue_products_with_similarity)
-top_revenue_products_with_similarity['Санал болгох бараанууд'] = top_revenue_products_with_similarity['Санал болгох бараанууд'].apply(format_similarity)
 
+top_revenue_products_with_similarity['Санал болгох бараанууд'] = top_revenue_products_with_similarity['Санал болгох бараанууд'].apply(format_similarity)
+st.write(top_products_with_similarity[['Барааны нэр', 'Top_10_Similar_Products']].head())
 st.markdown("### Давтамж өндөр бараанууд")
 st.dataframe(top_products_with_similarity[['Барааны нэр', 'Top_10_Similar_Products']].style.set_properties(**{
     'background-color': 'lightblue',
