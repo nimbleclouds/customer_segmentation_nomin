@@ -150,5 +150,6 @@ filtered_data = filtered_data.rename(columns={'Segment':'RFM Сегмент',
                                               'Recency':'Сүүлд худалдан авалт хийснээс хойш хоног (R)',
                                               'Frequency':'Худалдан авалтын давтамж (F)',
                                               'Monetary':'Нийт худалдан авалтын дүн (M)'})
+filtered_data = filtered_data.drop(columns = ['Product','Хэрэглэгчийн нийт худалдан авалт'])
 st.write(filtered_data.sample(10))
 
