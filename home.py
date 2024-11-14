@@ -154,7 +154,7 @@ def format_similarity(products):
         return ', '.join(products) if products else 'No similar products'
     return 'No similar products'
 
-
+top_products_with_similarity = filtered_data[filtered_data['Барааны нэр'].isin(top_products.index)]
 top_products_with_similarity['Барааны нэр'] = top_products_with_similarity['Барааны нэр'].str.strip().str.upper()
 top_products_with_similarity['Санал болгох бараанууд'] = top_products_with_similarity['Санал болгох бараанууд'].str.strip().str.upper()
 
