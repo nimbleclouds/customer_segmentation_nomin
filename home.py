@@ -9,6 +9,7 @@ from sklearn.preprocessing import MinMaxScaler
 from scipy.stats import zscore
 from sklearn.decomposition import PCA
 import seaborn as sns
+import os
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.compose import ColumnTransformer
 from sklearn.decomposition import TruncatedSVD
