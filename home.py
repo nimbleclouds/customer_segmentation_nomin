@@ -35,13 +35,13 @@ for chunk_file in chunk_files:
     df_list.append(chunk_df)  # Add the chunk to the list
 
 simi = pd.read_csv('similarity.csv')
-
+simi = simi.drop(columns='Unnamed: 0')
 # Concatenate all chunks into a single DataFrame
 data = pd.concat(df_list, ignore_index=True)
 
 # Optionally, you can reset the index after concatenation
 data.reset_index(drop=True, inplace=True)
-
+data = data.drop(columns='Unnamed: 0')
 # Ensure that datetime columns are properly converted to datetime format
 data['Огноо'] = pd.to_datetime(data['Огноо'])
 data['Үүсгэгдсэн огноо'] = pd.to_datetime(data['Үүсгэгдсэн огноо'])
@@ -51,8 +51,6 @@ data['Хэрэглэгчийн нийт худалдан авалт'] = data.gro
 
 # Standardize Gender (strip whitespace and capitalize)
 data['Хүйс'] = data['Хүйс'].str.strip().str.capitalize()
-
-# Move all filters to the sidebar
 
 # Date range for Огноо (Purchase Date)
 min_date = data['Огноо'].min().date()  # Convert to datetime.date format
@@ -141,18 +139,40 @@ filtered_data = data[
     (data['Segment'].isin(segment_selection))
 ]
 
+simi = simi.rename(columns={'Top_10_Similar_Products':'Санал болгох бараанууд'})
 filtered_data = filtered_data.merge(simi, left_on='Барааны нэр',right_on='Product',how='left')
 
 segment_customers = filtered_data[filtered_data['Segment'].isin(segment_selection)]
 segment_products = segment_customers['Барааны нэр'].value_counts()
+
+
 top_products = segment_products.head(10)
 segment_revenue = segment_customers.groupby('Барааны нэр')['Дүн'].sum()
 top_revenue_products = segment_revenue.sort_values(ascending=False).head(10)
-top_products_with_similarity = filtered_data[filtered_data['Барааны нэр'].isin(top_products.index)]
-top_revenue_products_with_similarity = filtered_data[filtered_data['Барааны нэр'].isin(top_revenue_products.index)]
 
-st.write(f"Top 10 products by frequency:")
-st.write(top_products_with_similarity[['Барааны нэр', 'Top_10_Similar_Products']])
-st.write(f"Top 10 products by revenue:")
-st.write(top_revenue_products_with_similarity[['Барааны нэр', 'Top_10_Similar_Products']])
+def format_similarity(products):
+    return ', '.join(products)  # Join product names in a comma-separated string
+
+top_products_with_similarity = filtered_data[filtered_data['Барааны нэр'].isin(top_products.index)]
+top_products_with_similarity['Санал болгох бараанууд'] = top_products_with_similarity['Санал болгох бараанууд'].apply(format_similarity)
+top_revenue_products_with_similarity = filtered_data[filtered_data['Барааны нэр'].isin(top_revenue_products.index)]
+top_revenue_products_with_similarity['Санал болгох бараанууд'] = top_revenue_products_with_similarity['Санал болгох бараанууд'].apply(format_similarity)
+
+st.markdown("### Давтамж өндөр бараанууд")
+st.dataframe(top_products_with_similarity[['Барааны нэр', 'Top_10_Similar_Products']].style.set_properties(**{
+    'background-color': 'lightblue',
+    'color': 'black',
+    'border': '1px solid black',
+    'text-align': 'center'
+}))
+
+st.markdown("### Борлуулалтын дүн өндөр бараанууд")
+st.dataframe(top_revenue_products_with_similarity[['Барааны нэр', 'Top_10_Similar_Products']].style.set_properties(**{
+    'background-color': 'lightgreen',
+    'color': 'black',
+    'border': '1px solid black',
+    'text-align': 'center'
+}))
 st.write(filtered_data.sample(50))
+
+
