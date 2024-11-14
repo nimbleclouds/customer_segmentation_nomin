@@ -154,20 +154,19 @@ def format_similarity(products):
         return ', '.join(products) if products else 'No similar products'
     return 'No similar products'
 
-top_products_with_similarity = filtered_data[filtered_data['Барааны нэр'].isin(top_products.index)]
-top_products_with_similarity['Санал болгох бараанууд'] = top_products_with_similarity['Санал болгох бараанууд'].apply(format_similarity)
 
-top_revenue_products_with_similarity = filtered_data[filtered_data['Барааны нэр'].isin(top_revenue_products.index)]
-top_revenue_products_with_similarity['Санал болгох бараанууд'] = top_revenue_products_with_similarity['Санал болгох бараанууд'].apply(format_similarity)
+top_products_with_similarity['Барааны нэр'] = top_products_with_similarity['Барааны нэр'].str.strip().str.upper()
+top_products_with_similarity['Санал болгох бараанууд'] = top_products_with_similarity['Санал болгох бараанууд'].str.strip().str.upper()
+
+top_revenue_products_with_similarity['Барааны нэр'] = top_revenue_products_with_similarity['Барааны нэр'].str.strip().str.upper()
+top_revenue_products_with_similarity['Санал болгох бараанууд'] = top_revenue_products_with_similarity['Санал болгох бараанууд'].str.strip().str.upper()
 
 st.write("### Давтамж өндөр бараанууд")
-# Displaying the top products and their recommendations as a list
 for index, row in top_products_with_similarity[['Барааны нэр', 'Санал болгох бараанууд']].iterrows():
     st.write(f"**{row['Барааны нэр']}**")
     st.write(f"  - **Recommended Products:** {row['Санал болгох бараанууд']}")
-    
+
 st.write("### Борлуулалтын дүн өндөр бараанууд")
-# Displaying the top revenue products and their recommendations as a list
 for index, row in top_revenue_products_with_similarity[['Барааны нэр', 'Санал болгох бараанууд']].iterrows():
     st.write(f"**{row['Барааны нэр']}**")
     st.write(f"  - **Recommended Products:** {row['Санал болгох бараанууд']}")
