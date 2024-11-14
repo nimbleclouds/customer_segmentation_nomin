@@ -139,33 +139,53 @@ filtered_data = data[
     (data['Segment'].isin(segment_selection))
 ]
 
+# Clean both the 'Барааны нэр' and 'Product' columns before merging
+filtered_data['Барааны нэр'] = filtered_data['Барааны нэр'].str.strip().str.upper()
+simi['Product'] = simi['Product'].str.strip().str.upper()
+
+# Perform the merge with the cleaned data
 simi = simi.rename(columns={'Top_10_Similar_Products': 'Санал болгох бараанууд'})
 filtered_data = filtered_data.merge(simi, left_on='Барааны нэр', right_on='Product', how='left')
 
+# Segment the customers based on the selected segments
 segment_customers = filtered_data[filtered_data['Segment'].isin(segment_selection)]
+
+# Top 10 most frequent products in the selected segment
 segment_products = segment_customers['Барааны нэр'].value_counts()
 top_products = segment_products.head(10)
 
+# Top 10 products by revenue in the selected segment
 segment_revenue = segment_customers.groupby('Барааны нэр')['Дүн'].sum()
 top_revenue_products = segment_revenue.sort_values(ascending=False).head(10)
 
+# Function to format similarity column as a comma-separated string
 def format_similarity(products):
     if isinstance(products, list):
         return ', '.join(products) if products else 'No similar products'
     return 'No similar products'
 
+# Apply similarity formatting for the top products based on frequency
 top_products_with_similarity = filtered_data[filtered_data['Барааны нэр'].isin(top_products.index)]
+top_products_with_similarity['Санал болгох бараанууд'] = top_products_with_similarity['Санал болгох бараанууд'].apply(format_similarity)
+
+# Apply similarity formatting for the top products based on revenue
+top_revenue_products_with_similarity = filtered_data[filtered_data['Барааны нэр'].isin(top_revenue_products.index)]
+top_revenue_products_with_similarity['Санал болгох бараанууд'] = top_revenue_products_with_similarity['Санал болгох бараанууд'].apply(format_similarity)
+
+# Clean and capitalize the product names and similarity columns
 top_products_with_similarity['Барааны нэр'] = top_products_with_similarity['Барааны нэр'].str.strip().str.upper()
 top_products_with_similarity['Санал болгох бараанууд'] = top_products_with_similarity['Санал болгох бараанууд'].str.strip().str.upper()
 
 top_revenue_products_with_similarity['Барааны нэр'] = top_revenue_products_with_similarity['Барааны нэр'].str.strip().str.upper()
 top_revenue_products_with_similarity['Санал болгох бараанууд'] = top_revenue_products_with_similarity['Санал болгох бараанууд'].str.strip().str.upper()
 
+# Display top products based on frequency
 st.write("### Давтамж өндөр бараанууд")
 for index, row in top_products_with_similarity[['Барааны нэр', 'Санал болгох бараанууд']].iterrows():
     st.write(f"**{row['Барааны нэр']}**")
     st.write(f"  - **Recommended Products:** {row['Санал болгох бараанууд']}")
 
+# Display top products based on revenue
 st.write("### Борлуулалтын дүн өндөр бараанууд")
 for index, row in top_revenue_products_with_similarity[['Барааны нэр', 'Санал болгох бараанууд']].iterrows():
     st.write(f"**{row['Барааны нэр']}**")
