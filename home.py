@@ -146,6 +146,9 @@ simi['Product'] = simi['Product'].str.strip().str.upper()
 
 simi = simi.rename(columns={'Top_10_Similar_Products': 'Санал болгох бараанууд'})
 filtered_data = filtered_data.merge(simi, left_on='Барааны нэр', right_on='Product', how='left')
-
-st.write(filtered_data.head(10))
+filtered_data = filtered_data.rename(columns={'Segment':'RFM Сегмент',
+                                              'Recency':'Сүүлд худалдан авалт хийснээс хойш хоног (R)',
+                                              'Frequency':'Худалдан авалтын давтамж (F)',
+                                              'Monetary':'Нийт худалдан авалтын дүн (M)'})
+st.write(filtered_data.sample(10))
 
