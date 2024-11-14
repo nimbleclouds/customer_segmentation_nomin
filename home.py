@@ -15,7 +15,7 @@ from sklearn.compose import ColumnTransformer
 from sklearn.decomposition import TruncatedSVD
 from scipy.sparse import csr_matrix
 import streamlit as st
-import date
+from datetime import date
 # Path to the directory where chunks are saved
 output_directory = 'data/'
 
