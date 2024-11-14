@@ -34,9 +34,11 @@ for chunk_file in chunk_files:
     chunk_df = pd.read_csv(chunk_path)
     df_list.append(chunk_df)  # Add the chunk to the list
 
+simi = pd.read_csv('similarity.csv')
+
 # Concatenate all chunks into a single DataFrame
 data = pd.concat(df_list, ignore_index=True)
-data = data[data['Огноо']>'2024-05-31']
+
 # Optionally, you can reset the index after concatenation
 data.reset_index(drop=True, inplace=True)
 
@@ -139,44 +141,18 @@ filtered_data = data[
     (data['Segment'].isin(segment_selection))
 ]
 
+filtered_data = filtered_data.merge(simi, left_on='Барааны нэр',right_on='Product',how='left')
+
 segment_customers = filtered_data[filtered_data['Segment'].isin(segment_selection)]
 segment_products = segment_customers['Барааны нэр'].value_counts()
-top_products = segment_products.head(10) 
+top_products = segment_products.head(10)
 segment_revenue = segment_customers.groupby('Барааны нэр')['Дүн'].sum()
 top_revenue_products = segment_revenue.sort_values(ascending=False).head(10)
+top_products_with_similarity = filtered_data[filtered_data['Барааны нэр'].isin(top_products.index)]
+top_revenue_products_with_similarity = filtered_data[filtered_data['Барааны нэр'].isin(top_revenue_products.index)]
 
-dx = filtered_data[['Баримтны дугаар', 'Барааны нэр', 'Тоо ширхэг']]
-dx.loc[:, 'purchased'] = 1
-invoices = dx['Баримтны дугаар'].unique()
-products = dx['Барааны нэр'].unique()
-user_to_id = {user: idx for idx, user in enumerate(invoices)}
-product_to_id = {product: idx for idx, product in enumerate(products)}
-row_indices = dx['Баримтны дугаар'].map(user_to_id).values
-col_indices = dx['Барааны нэр'].map(product_to_id).values
-data = dx['purchased'].values 
-user_item_sparse_matrix = csr_matrix((data, (row_indices, col_indices)), shape=(len(invoices), len(products)))
-svd = TruncatedSVD(n_components=50)  # You can adjust the number of components
-user_embeddings = svd.fit_transform(user_item_sparse_matrix)
-product_embeddings = svd.components_.T  # Transpose to get product embeddings
-product_similarity = cosine_similarity(product_embeddings)
-product_similarity_df = pd.DataFrame(product_similarity, index=products, columns=products)
-
-def recommend_products(product_name, top_n=5):
-    similar_products = product_similarity_df[product_name].sort_values(ascending=False)
-    similar_products = similar_products[similar_products.index != product_name]
-    return similar_products.head(top_n)
-
-
-selected_product = st.selectbox('Choose a product', options = products)
-
-if st.button('Product selection'):
-    recommended_products = recommend_products(selected_product, top_n=5)
-    st.write(f'Сонгогдсон бараанд хамгийн өндөр корреляцитай бараанууд:')
-    st.write(recommended_products)
-
-
-st.write(f'Сегментийн хувьд хамгийн өндөр борлуулалттай бараанууд:')
-st.write(top_products)
-st.write(f'Сегментийн хувьд хамгийн өндөр дүнтэй бараанууд:')
-st.write(top_revenue_products)
+st.write(f"Top 10 products by frequency:")
+st.write(top_products_with_similarity[['Барааны нэр', 'Top_10_Similar_Products']])
+st.write(f"Top 10 products by revenue:")
+st.write(top_revenue_products_with_similarity[['Барааны нэр', 'Top_10_Similar_Products']])
 st.write(filtered_data.sample(50))
