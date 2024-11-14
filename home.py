@@ -125,42 +125,39 @@ filtered_data = filtered_data.drop(columns = ['Product','Хэрэглэгчий�
 
 
 
-metric = st.selectbox("Choose a metric to bin", ['Картны хувь', 'Нас', 'Хүйс', 'Нийт худалдан авалтын дүн (M)'])
-apply_button = st.button("Apply")
 def create_bins(filtered_df, metric):
+    # Handle "Картны хувь" (CardRate) - 7 bins for CardRate
     if metric == 'Картны хувь':
-        unique_card_rates = sorted(filtered_df['Картны хувь'].unique())
-        if len(unique_card_rates) >= 3 and len(unique_card_rates) <= 10:
-            bins = pd.cut(filtered_df['Картны хувь'], bins=7, labels=[f'Bin {i+1}' for i in range(7)])
-            filtered_df['Картны хувь_Bins'] = bins
-            st.write(filtered_df[['Картны хувь', 'Картны хувь_Bins']])
+        bins = pd.cut(filtered_df['Картны хувь'], bins=7, labels=[f'Bin {i+1}' for i in range(7)])
+        filtered_df['Картны хувь_Bins'] = bins
+        st.write(filtered_df[['Картны хувь', 'Картны хувь_Bins']])
 
+    # Handle "Хүйс" (Gender) - 2 bins (Male, Female)
     elif metric == 'Хүйс':
         bins = pd.cut(filtered_df['Хүйс'], bins=2, labels=['Male', 'Female'])
         filtered_df['Хүйс_Bins'] = bins
         st.write(filtered_df[['Хүйс', 'Хүйс_Bins']])
 
+    # Handle "Нас" (Age) - 3 bins for Age
     elif metric == 'Нас':
-        min_Нас = filtered_df['Нас'].min()
-        max_Нас = filtered_df['Нас'].max()
-        Нас_bins = [min_Нас, (max_Нас - min_Нас) / 3 + min_Нас, (max_Нас - min_Нас) * 2 / 3 + min_Нас, max_Нас]
-        Нас_labels = ['Bin 1', 'Bin 2', 'Bin 3']
-        bins = pd.cut(filtered_df['Нас'], bins=Нас_bins, labels=Нас_labels)
+        bins = pd.cut(filtered_df['Нас'], bins=3, labels=['Bin 1', 'Bin 2', 'Bin 3'])
         filtered_df['Нас_Bins'] = bins
         st.write(filtered_df[['Нас', 'Нас_Bins']])
 
+    # Handle "Нийт худалдан авалтын дүн (M)" (PurchaseAmount) - 3 bins for PurchaseAmount
     elif metric == 'Нийт худалдан авалтын дүн (M)':
-        min_amount = filtered_df['Нийт худалдан авалтын дүн (M)'].min()
-        max_amount = filtered_df['Нийт худалдан авалтын дүн (M)'].max()
-        amount_bins = [min_amount, (max_amount - min_amount) / 3 + min_amount, (max_amount - min_amount) * 2 / 3 + min_amount, max_amount]
-        amount_labels = ['Bin 1', 'Bin 2', 'Bin 3']
-        bins = pd.cut(filtered_df['Нийт худалдан авалтын дүн (M)'], bins=amount_bins, labels=amount_labels)
+        bins = pd.cut(filtered_df['Нийт худалдан авалтын дүн (M)'], bins=3, labels=['Bin 1', 'Bin 2', 'Bin 3'])
         filtered_df['Нийт худалдан авалтын дүн (M)_Bins'] = bins
         st.write(filtered_df[['Нийт худалдан авалтын дүн (M)', 'Нийт худалдан авалтын дүн (M)_Bins']])
+
     return filtered_df
-    
+
+metric = st.selectbox("Choose a metric to bin", ['Картны хувь', 'Нас', 'Хүйс', 'Нийт худалдан авалтын дүн (M)'])
+apply_button = st.button("Apply")
+
 if apply_button:
     updated_filtered_df = create_bins(filtered_data, metric)
-    st.write(updated_filtered_df.sample(10))
+    st.write(updated_filtered_df.sample(10))  # Display the updated dataframe
+
 st.write(filtered_data.sample(10))
 
