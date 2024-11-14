@@ -38,7 +38,7 @@ simi = pd.read_csv('similarity.csv')
 simi = simi.drop(columns='Unnamed: 0')
 # Concatenate all chunks into a single DataFrame
 data = pd.concat(df_list, ignore_index=True)
-
+st.write(data['Хүйс'].unique())
 # Optionally, you can reset the index after concatenation
 data.reset_index(drop=True, inplace=True)
 data = data.drop(columns='Unnamed: 0')
