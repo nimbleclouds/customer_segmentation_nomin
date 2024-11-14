@@ -158,8 +158,9 @@ def create_bins(filtered_df, metric):
         filtered_df['Нийт худалдан авалтын дүн (M)_Bins'] = bins
         st.write(filtered_df[['Нийт худалдан авалтын дүн (M)', 'Нийт худалдан авалтын дүн (M)_Bins']])
     return filtered_df
+    
 if apply_button:
-    updated_filtered_df = create_bins(filtered_filtered_df, metric)
+    updated_filtered_df = create_bins(filtered_df, metric)
 
 st.write(filtered_data.sample(10))
 
