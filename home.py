@@ -125,39 +125,52 @@ filtered_data = filtered_data.drop(columns = ['Product','Хэрэглэгчий�
 
 
 
-def create_bins(filtered_df, metric):
-    # Handle "Картны хувь" (CardRate) - 7 bins for CardRate
-    if metric == 'Картны хувь':
-        bins = pd.cut(filtered_df['Картны хувь'], bins=7, labels=[f'Bin {i+1}' for i in range(7)])
-        filtered_df['Картны хувь_Bins'] = bins
-        st.write(filtered_df[['Картны хувь', 'Картны хувь_Bins']])
+bins1 = pd.cut(filtered_data['Картны хувь'], bins=7, labels=[f'Bin {i+1}' for i in range(7)])
+filtered_data['Картны хувь_Bins'] = bins1
+bins2 = pd.cut(filtered_data['Нас'], bins=3, labels=['Bin 1', 'Bin 2', 'Bin 3'])
+filtered_data['Нас_Bins'] = bins2
+bins3 = pd.cut(filtered_data['Нийт худалдан авалтын дүн (M)'], bins=3, labels=['Bin 1', 'Bin 2', 'Bin 3'])
+filtered_data['Нийт худалдан авалтын дүн (M)_Bins'] = bins3
 
-    # Handle "Хүйс" (Gender) - 2 bins (Male, Female)
-    elif metric == 'Хүйс':
-        bins = pd.cut(filtered_df['Хүйс'], bins=2, labels=['Male', 'Female'])
-        filtered_df['Хүйс_Bins'] = bins
-        st.write(filtered_df[['Хүйс', 'Хүйс_Bins']])
+numerical_columns = filtered_df.select_dtypes(include=['int64', 'float64']).columns
 
-    # Handle "Нас" (Age) - 3 bins for Age
-    elif metric == 'Нас':
-        bins = pd.cut(filtered_df['Нас'], bins=3, labels=['Bin 1', 'Bin 2', 'Bin 3'])
-        filtered_df['Нас_Bins'] = bins
-        st.write(filtered_df[['Нас', 'Нас_Bins']])
+plt.figure(figsize=(12, 8))  # Adjust the figure size as needed
+sns.boxplot(data=filtered_df[numerical_columns])
+plt.xticks(rotation=90)  # Rotate column names for better readability
+plt.title("Boxplot for all Numerical Columns")
+plt.show()
 
-    # Handle "Нийт худалдан авалтын дүн (M)" (PurchaseAmount) - 3 bins for PurchaseAmount
-    elif metric == 'Нийт худалдан авалтын дүн (M)':
-        bins = pd.cut(filtered_df['Нийт худалдан авалтын дүн (M)'], bins=3, labels=['Bin 1', 'Bin 2', 'Bin 3'])
-        filtered_df['Нийт худалдан авалтын дүн (M)_Bins'] = bins
-        st.write(filtered_df[['Нийт худалдан авалтын дүн (M)', 'Нийт худалдан авалтын дүн (M)_Bins']])
+corr_matrix = filtered_df[numerical_columns].corr()
+mask = pd.np.triu(np.ones_like(corr_matrix, dtype=bool))
 
-    return filtered_df
+plt.figure(figsize=(12, 8))
+sns.heatmap(corr_matrix, annot=True, fmt=".2f", cmap='coolwarm', mask=mask, vmin=-1, vmax=1, linewidths=0.5)
+plt.title("Correlation Matrix Heatmap")
+plt.show()
 
-metric = st.selectbox("Choose a metric to bin", ['Картны хувь', 'Нас', 'Хүйс', 'Нийт худалдан авалтын дүн (M)'])
+plt.figure(figsize=(15, 12))
+for i, column in enumerate(numerical_columns):
+    plt.subplot(len(numerical_columns) // 2 + 1, 2, i + 1)  # Adjust number of rows/columns based on the number of features
+    sns.histplot(filtered_df[column], kde=True, bins=20, color='blue', kde_kws={'color': 'red'})
+    plt.title(f'Distribution of {column}')
+    plt.tight_layout()  # Ensure the plots don't overlap
+plt.show()
+
+segment_spending = filtered_df.groupby('L3')['Нийт худалдан авалтын дүн (M)'].sum().reset_index()
+segment_spending = segment_spending.sort_values(by='Нийт худалдан авалтын дүн (M)', ascending=False)
+plt.figure(figsize=(10, 6))
+sns.barplot(x='Нийт худалдан авалтын дүн (M)', y='L3', data=segment_spending, palette='viridis')
+plt.title('Total Spending by L3 Segment', fontsize=16)
+plt.xlabel('Total Spending (M)', fontsize=12)
+plt.ylabel('L3 Segment', fontsize=12)
+plt.show()
+
+####################################################################################################################
+
+metric1 = st.sidebar.selectbox("Бүлэглэх чанар сонгох", ['Картны хувь', 'Нас', 'Нийт худалдан авалтын дүн (M)'])
 apply_button = st.button("Apply")
 
 if apply_button:
-    updated_filtered_df = create_bins(filtered_data, metric)
-    st.write(updated_filtered_df.sample(10))  # Display the updated dataframe
-
-st.write(filtered_data.sample(10))
-
+    st.write('haha')
+    # for i in filtered_data[metric1].unique():
+    #     filtered_data[filtered_data[metric1] == i]
