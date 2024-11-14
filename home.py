@@ -141,11 +141,11 @@ plt.title("Boxplot for all Numerical Columns")
 plt.show()
 
 corr_matrix = filtered_data[numerical_columns].corr()
-mask = pd.np.triu(np.ones_like(corr_matrix, dtype=bool))
-
+mask = np.triu(np.ones_like(corr_matrix, dtype=bool))
+# Plotting the correlation matrix using a heatmap
 plt.figure(figsize=(12, 8))
-sns.heatmap(corr_matrix, annot=True, fmt=".2f", cmap='coolwarm', mask=mask, vmin=-1, vmax=1, linewidths=0.5)
-plt.title("Correlation Matrix Heatmap")
+sns.heatmap(corr_matrix, mask=mask, annot=True, cmap='coolwarm', fmt='.2f', cbar=True, linewidths=0.5)
+plt.title('Correlation Heatmap', fontsize=16)
 plt.show()
 
 plt.figure(figsize=(15, 12))
