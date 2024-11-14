@@ -139,29 +139,29 @@ filtered_data = data[
     (data['Segment'].isin(segment_selection))
 ]
 
-simi = simi.rename(columns={'Top_10_Similar_Products':'Санал болгох бараанууд'})
-filtered_data = filtered_data.merge(simi, left_on='Барааны нэр',right_on='Product',how='left')
+simi = simi.rename(columns={'Top_10_Similar_Products': 'Санал болгох бараанууд'})
+filtered_data = filtered_data.merge(simi, left_on='Барааны нэр', right_on='Product', how='left')
 
 segment_customers = filtered_data[filtered_data['Segment'].isin(segment_selection)]
 segment_products = segment_customers['Барааны нэр'].value_counts()
-
-
 top_products = segment_products.head(10)
+
 segment_revenue = segment_customers.groupby('Барааны нэр')['Дүн'].sum()
 top_revenue_products = segment_revenue.sort_values(ascending=False).head(10)
 
 def format_similarity(products):
     if isinstance(products, list):
         return ', '.join(products) if products else 'No similar products'
-    return 'No similar products'  # In case it's not a list or is None/NaN
+    return 'No similar products'
 
 top_products_with_similarity = filtered_data[filtered_data['Барааны нэр'].isin(top_products.index)]
 top_products_with_similarity['Санал болгох бараанууд'] = top_products_with_similarity['Санал болгох бараанууд'].apply(format_similarity)
-top_revenue_products_with_similarity = filtered_data[filtered_data['Барааны нэр'].isin(top_revenue_products.index)]
 
+top_revenue_products_with_similarity = filtered_data[filtered_data['Барааны нэр'].isin(top_revenue_products.index)]
 top_revenue_products_with_similarity['Санал болгох бараанууд'] = top_revenue_products_with_similarity['Санал болгох бараанууд'].apply(format_similarity)
+
 st.markdown("### Давтамж өндөр бараанууд")
-st.dataframe(top_products_with_similarity[['Барааны нэр', 'Top_10_Similar_Products']].style.set_properties(**{
+st.dataframe(top_products_with_similarity[['Барааны нэр', 'Санал болгох бараанууд']].style.set_properties(**{
     'background-color': 'lightblue',
     'color': 'black',
     'border': '1px solid black',
@@ -169,12 +169,9 @@ st.dataframe(top_products_with_similarity[['Барааны нэр', 'Top_10_Simi
 }))
 
 st.markdown("### Борлуулалтын дүн өндөр бараанууд")
-st.dataframe(top_revenue_products_with_similarity[['Барааны нэр', 'Top_10_Similar_Products']].style.set_properties(**{
+st.dataframe(top_revenue_products_with_similarity[['Барааны нэр', 'Санал болгох бараанууд']].style.set_properties(**{
     'background-color': 'lightgreen',
     'color': 'black',
     'border': '1px solid black',
     'text-align': 'center'
 }))
-st.write(filtered_data.sample(50))
-
-
