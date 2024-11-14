@@ -15,6 +15,7 @@ from sklearn.compose import ColumnTransformer
 from sklearn.decomposition import TruncatedSVD
 from scipy.sparse import csr_matrix
 import streamlit as st
+import date
 # Path to the directory where chunks are saved
 output_directory = 'data/'
 
@@ -59,7 +60,7 @@ start_date, end_date = st.sidebar.slider(
     "Үндсэн Огноо",
     min_value=min_date,
     max_value=max_date,
-    value='2024-09-01'
+    value=date(2024,9,1)
 )
 
 # Convert the selected date range back to pandas Timestamp for filtering
