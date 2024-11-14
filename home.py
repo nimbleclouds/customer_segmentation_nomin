@@ -36,7 +36,7 @@ for chunk_file in chunk_files:
 
 # Concatenate all chunks into a single DataFrame
 data = pd.concat(df_list, ignore_index=True)
-
+data = data[data['Огноо']>'2024-05-31']
 # Optionally, you can reset the index after concatenation
 data.reset_index(drop=True, inplace=True)
 
@@ -60,7 +60,7 @@ start_date, end_date = st.sidebar.slider(
     "Үндсэн Огноо",
     min_value=min_date,
     max_value=max_date,
-    value=(date(2024, 6, 1), date(2024, 8, 31))
+    value=(min_date,max_date)
 )
 
 # Convert the selected date range back to pandas Timestamp for filtering
