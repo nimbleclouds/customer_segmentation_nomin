@@ -151,7 +151,9 @@ segment_revenue = segment_customers.groupby('Барааны нэр')['Дүн'].s
 top_revenue_products = segment_revenue.sort_values(ascending=False).head(10)
 
 def format_similarity(products):
-    return ', '.join(products)  # Join product names in a comma-separated string
+    if isinstance(products, list):
+        return ', '.join(products) if products else 'No similar products'
+    return 'No similar products'  # In case it's not a list or is None/NaN
 
 top_products_with_similarity = filtered_data[filtered_data['Барааны нэр'].isin(top_products.index)]
 top_products_with_similarity['Санал болгох бараанууд'] = top_products_with_similarity['Санал болгох бараанууд'].apply(format_similarity)
