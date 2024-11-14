@@ -145,7 +145,7 @@ segment_revenue = segment_customers.groupby('Барааны нэр')['Дүн'].s
 top_revenue_products = segment_revenue.sort_values(ascending=False).head(10)
 
 dx = filtered_data[['Баримтны дугаар', 'Барааны нэр', 'Тоо ширхэг']]
-dx['purchased'] = 1  # Marking a purchase
+dx.loc[:, 'purchased'] = 1
 invoices = dx['Баримтны дугаар'].unique()
 products = dx['Барааны нэр'].unique()
 user_to_id = {user: idx for idx, user in enumerate(invoices)}
