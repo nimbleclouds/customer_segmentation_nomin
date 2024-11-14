@@ -59,7 +59,7 @@ start_date, end_date = st.sidebar.slider(
     "Үндсэн Огноо",
     min_value=min_date,
     max_value=max_date,
-    value=(min_date, max_date)
+    value=datetime(2024, 9, 1)
 )
 
 # Convert the selected date range back to pandas Timestamp for filtering
