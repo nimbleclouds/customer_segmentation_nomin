@@ -160,18 +160,14 @@ top_products_with_similarity['Санал болгох бараанууд'] = top
 top_revenue_products_with_similarity = filtered_data[filtered_data['Барааны нэр'].isin(top_revenue_products.index)]
 top_revenue_products_with_similarity['Санал болгох бараанууд'] = top_revenue_products_with_similarity['Санал болгох бараанууд'].apply(format_similarity)
 
-st.markdown("### Давтамж өндөр бараанууд")
-st.dataframe(top_products_with_similarity[['Барааны нэр', 'Санал болгох бараанууд']].style.set_properties(**{
-    'background-color': 'lightblue',
-    'color': 'black',
-    'border': '1px solid black',
-    'text-align': 'center'
-}))
-
-st.markdown("### Борлуулалтын дүн өндөр бараанууд")
-st.dataframe(top_revenue_products_with_similarity[['Барааны нэр', 'Санал болгох бараанууд']].style.set_properties(**{
-    'background-color': 'lightgreen',
-    'color': 'black',
-    'border': '1px solid black',
-    'text-align': 'center'
-}))
+st.write("### Давтамж өндөр бараанууд")
+# Displaying the top products and their recommendations as a list
+for index, row in top_products_with_similarity[['Барааны нэр', 'Санал болгох бараанууд']].iterrows():
+    st.write(f"**{row['Барааны нэр']}**")
+    st.write(f"  - **Recommended Products:** {row['Санал болгох бараанууд']}")
+    
+st.write("### Борлуулалтын дүн өндөр бараанууд")
+# Displaying the top revenue products and their recommendations as a list
+for index, row in top_revenue_products_with_similarity[['Барааны нэр', 'Санал болгох бараанууд']].iterrows():
+    st.write(f"**{row['Барааны нэр']}**")
+    st.write(f"  - **Recommended Products:** {row['Санал болгох бараанууд']}")
