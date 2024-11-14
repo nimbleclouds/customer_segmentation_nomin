@@ -151,7 +151,7 @@ plt.show()
 plt.figure(figsize=(15, 12))
 for i, column in enumerate(numerical_columns):
     plt.subplot(len(numerical_columns) // 2 + 1, 2, i + 1)  # Adjust number of rows/columns based on the number of features
-    sns.histplot(filtered_data[column], kde=True, bins=20, color='blue', kde_kws={'color': 'red'})
+    sns.histplot(filtered_data[column], kde=True, bins=20, kde_kws={'color': 'red'})
     plt.title(f'Distribution of {column}')
     plt.tight_layout()  # Ensure the plots don't overlap
 plt.show()
