@@ -34,6 +34,7 @@ data = pd.concat(df_list, ignore_index=True)
 data.reset_index(drop=True, inplace=True)
 data = data.drop(columns='Unnamed: 0')
 data['Огноо'] = pd.to_datetime(data['Огноо'])
+data = data[data['Огноо']>'2024-07-01']
 data['Үүсгэгдсэн огноо'] = pd.to_datetime(data['Үүсгэгдсэн огноо'])
 data['Хэрэглэгчийн нийт худалдан авалт'] = data.groupby('Картны дугаар')['Дүн'].transform('sum')
 data['Хүйс'] = data['Хүйс'].str.strip().str.capitalize()
