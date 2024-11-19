@@ -91,7 +91,7 @@ branches = st.sidebar.multiselect(
 segment_selection = st.sidebar.multiselect("Сегмент",
                                            options=data['Segment'].unique(),
                                           default=data['Segment'].unique())
-basket_avg = data.groupby('Картны дугаар')['Дүн'].mean().reset_index()
+basket_avg = data.groupby('Картны дугаар')['Дүн'].mean(numeric_only=True).reset_index()
 basket_avg = basket_avg.rename(columns={'Дүн': 'Сагсны дундаж'})  # Rename the column for clarity
 data = pd.merge(data, basket_avg, on='Картны дугаар', how='left')
 bas_min, bas_max = st.sidebar.slider(
@@ -421,10 +421,10 @@ for i, column in enumerate(cols_for_dist_plots, 1):
 st.pyplot(plt)
 
 st.subheader("2 кластер солюшн центройд")
-st.write(df_with_clusters.groupby('Cluster_2').mean())
+st.write(df_with_clusters.groupby('Cluster_2').mean(numeric_only=True))
 
 st.subheader("3 кластер солюшн центройд")
-st.write(df_with_clusters.groupby('Cluster_3').mean())
+st.write(df_with_clusters.groupby('Cluster_3').mean(numeric_only=True))
 st.divider()
 
 ####################################################################################################################
