@@ -494,7 +494,7 @@ def process_bins(df, metric):
             sns.scatterplot(data=df_pcs_2, x='PC1', y='PC2', hue='Cluster', palette='Set2')
             st.pyplot(plt)
             st.write(aggregated_df1)
-            st.write(aggregated_df1.groupby('Cluster').mean())
+            st.write(aggregated_df1.groupby('Cluster').mean(numeric_only=True))
 
 if apply_button:
     process_bins(filtered_data, metric1)
